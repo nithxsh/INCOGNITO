@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
 // Deployed Google Sheets Web App URL for https://docs.google.com/spreadsheets/d/1EgvSjLOkqPWTlrvCOB6r6ikdnh0qmynRNH278Y8qpNU/edit?usp=sharing
-const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwKva14kAh77ovEw_uvuo_KKcNtTnd_7WzF7dGRnGqF0uHk213bn1IB9Jcxq4t9_41v-w/exec";
+const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbyBGKNVL_SINW5m_vNq-jQhfjURk1LYtBze9L3u0ita-uE0UQYDvTMdmcrlAOhrSaQl/exec";
 
 let auth = null;
 let provider = null;
