@@ -363,7 +363,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const inputs = activeStep.querySelectorAll('input, textarea, select');
         let isValid = true;
         inputs.forEach(input => {
-            if (input.name === 'company' || input.placeholder.includes('Optional')) {
+            if (input.name === 'company' || (input.placeholder && input.placeholder.includes('Optional'))) {
                 return;
             }
             if (!input.value.trim()) {
