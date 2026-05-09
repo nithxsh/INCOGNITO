@@ -389,6 +389,9 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Anti-XSS Sanitization Engine
         for (let [key, val] of formData.entries()) {
+            if (val instanceof File) {
+                continue; // Skip raw File objects to prevent Firestore upload rejection!
+            }
             if (typeof val === 'string') {
                 projectData[key] = val.replace(/<\/?[^>]+(>|$)/g, ""); // Strip HTML tags
             } else {
@@ -398,8 +401,9 @@ document.addEventListener('DOMContentLoaded', () => {
         projectData.timestamp = firebase.firestore.FieldValue.serverTimestamp(); // Adds a true server timestamp
 
         try {
-            // 1. Write directly to Firestore "leads" collection
-            const firestorePromise = db.collection("leads").add(projectData);
+            // 1. Write directly to Firestore "leads" collection (failsafe-enabled)
+            const firestorePromise = db.collection("leads").add(projectData)
+                .catch(err => console.warn("Firestore save bypassed:", err));
             
             // 2. Secretly transmit to Google Sheets via Web App URL
             const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
@@ -696,6 +700,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Anti-XSS Sanitization Engine
             for (let [key, val] of formData.entries()) {
+                if (val instanceof File) {
+                    continue; // Skip raw File objects to prevent Firestore upload rejection!
+                }
                 if (typeof val === 'string') {
                     applicantData[key] = val.replace(/<\/?[^>]+(>|$)/g, "");
                 } else {
@@ -705,8 +712,9 @@ document.addEventListener('DOMContentLoaded', () => {
             applicantData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
 
             try {
-                // 1. Write directly to Firestore "operatives" collection
-                const firestorePromise = db.collection("operatives").add(applicantData);
+                // 1. Write directly to Firestore "operatives" collection (failsafe-enabled)
+                const firestorePromise = db.collection("operatives").add(applicantData)
+                    .catch(err => console.warn("Firestore save bypassed:", err));
                 
                 // 2. Secretly transmit to Google Sheets via Web App URL
                 const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
