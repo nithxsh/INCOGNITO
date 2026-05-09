@@ -406,9 +406,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 .catch(err => console.warn("Firestore save bypassed:", err));
             
             // 2. Secretly transmit to Google Sheets via Web App URL
+            const searchParams = new URLSearchParams();
+            for (let [key, val] of formData.entries()) {
+                if (!(val instanceof File)) {
+                    searchParams.append(key, val);
+                }
+            }
             const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
                 method: 'POST',
-                body: formData,
+                body: searchParams,
                 mode: 'no-cors' // Bypasses CORS blocking
             });
 
@@ -717,9 +723,15 @@ document.addEventListener('DOMContentLoaded', () => {
                     .catch(err => console.warn("Firestore save bypassed:", err));
                 
                 // 2. Secretly transmit to Google Sheets via Web App URL
+                const searchParams = new URLSearchParams();
+                for (let [key, val] of formData.entries()) {
+                    if (!(val instanceof File)) {
+                        searchParams.append(key, val);
+                    }
+                }
                 const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
                     method: 'POST',
-                    body: formData,
+                    body: searchParams,
                     mode: 'no-cors' // Bypasses CORS blocking
                 });
 
