@@ -23,6 +23,7 @@ if (window.location.protocol.startsWith('http')) {
 } else {
     console.warn("INCOGNITO: Bypassing Firebase Auth under local file:// protocol. Use a local HTTP/HTTPS server for authentication features.");
     auth = {
+        currentUser: null,
         onAuthStateChanged: (callback) => callback(null),
         signInWithPopup: () => Promise.reject(new Error("Firebase Auth is disabled under local file:// protocol.")),
         signOut: () => Promise.resolve()
@@ -422,9 +423,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // 4.5 Google Sign-In Gate for "Start a Project" CTA
+    const heroCta = document.getElementById('hero-cta');
+    let signedInUser = null;
+
+    function autoFillAndScroll(user) {
+        signedInUser = user;
+        const nameField = form.querySelector('input[name="name"]');
+        const emailField = form.querySelector('input[name="email"]');
+        
+        if (nameField && user.displayName) {
+            nameField.value = user.displayName;
+            nameField.style.borderColor = 'rgba(0, 240, 255, 0.5)';
+            nameField.style.color = '#00f0ff';
+        }
+        if (emailField && user.email) {
+            emailField.value = user.email;
+            emailField.style.borderColor = 'rgba(0, 240, 255, 0.5)';
+            emailField.style.color = '#00f0ff';
+        }
+        
+        // Scroll to contact section
+        const contactSection = document.querySelector('#contact');
+        if (contactSection) {
+            window.scrollTo({
+                top: contactSection.offsetTop,
+                behavior: 'smooth'
+            });
+        }
+    }
+
+    if (heroCta) {
+        heroCta.addEventListener('click', async (e) => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            
+            try {
+                // If already signed in, just auto-fill and scroll
+                if (auth.currentUser) {
+                    autoFillAndScroll(auth.currentUser);
+                    return;
+                }
+                
+                // Trigger Google Sign-In Popup
+                const result = await auth.signInWithPopup(provider);
+                autoFillAndScroll(result.user);
+                
+            } catch (error) {
+                console.error('Sign-In Error:', error);
+                // Fallback: scroll to contact form anyway if sign-in fails/cancelled
+                const contactSection = document.querySelector('#contact');
+                if (contactSection) {
+                    window.scrollTo({
+                        top: contactSection.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            }
+        });
+    }
+
     // Smooth Scroll for Nav Links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
+            if (this.id === 'hero-cta') return; // Handled by Google Sign-In flow
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
