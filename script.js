@@ -12,6 +12,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
+// Deployed Google Sheets Web App URL for https://docs.google.com/spreadsheets/d/1EgvSjLOkqPWTlrvCOB6r6ikdnh0qmynRNH278Y8qpNU/edit?usp=sharing
+const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwKva14kAh77ovEw_uvuo_KKcNtTnd_7WzF7dGRnGqF0uHk213bn1IB9Jcxq4t9_41v-w/exec";
+
 let auth = null;
 let provider = null;
 
@@ -399,7 +402,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const firestorePromise = db.collection("leads").add(projectData);
             
             // 2. Secretly transmit to Google Sheets via Web App URL
-            const sheetsPromise = fetch('https://script.google.com/macros/s/AKfycbwKva14kAh77ovEw_uvuo_KKcNtTnd_7WzF7dGRnGqF0uHk213bn1IB9Jcxq4t9_41v-w/exec', {
+            const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
                 method: 'POST',
                 body: formData,
                 mode: 'no-cors' // Bypasses CORS blocking
@@ -706,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const firestorePromise = db.collection("operatives").add(applicantData);
                 
                 // 2. Secretly transmit to Google Sheets via Web App URL
-                const sheetsPromise = fetch('https://script.google.com/macros/s/AKfycbwKva14kAh77ovEw_uvuo_KKcNtTnd_7WzF7dGRnGqF0uHk213bn1IB9Jcxq4t9_41v-w/exec', {
+                const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
                     method: 'POST',
                     body: formData,
                     mode: 'no-cors' // Bypasses CORS blocking
@@ -967,4 +970,158 @@ document.addEventListener('DOMContentLoaded', () => {
         icon.addEventListener('click', handleInteraction);
         icon.addEventListener('touchstart', handleInteraction, { passive: false });
     });
+
+    // --- ID Card Base64 File Reader Listener ---
+    const idCardInput = document.getElementById('hiring-id-card');
+    const idCardBase64Input = document.getElementById('id-card-base64');
+    const idCardPreviewContainer = document.getElementById('id-card-preview-container');
+    const idCardPreview = document.getElementById('id-card-preview');
+
+    if (idCardInput) {
+        idCardInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    idCardBase64Input.value = event.target.result;
+                    idCardPreview.src = event.target.result;
+                    idCardPreviewContainer.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                idCardBase64Input.value = '';
+                idCardPreviewContainer.style.display = 'none';
+                idCardPreview.src = '';
+            }
+        });
+    }
+
+    // --- Dynamic Live Booked Projects Registry Loader ---
+    const bookingsLoader = document.getElementById('bookings-loader');
+    const bookingsGrid = document.getElementById('bookings-grid');
+
+    async function fetchActiveBookings() {
+        if (!db) return;
+        try {
+            db.collection("leads")
+              .orderBy("timestamp", "desc")
+              .limit(6)
+              .onSnapshot((snapshot) => {
+                  if (snapshot.empty) {
+                      // Load beautiful mocked bookings as fallback
+                      const mockBookings = [
+                          { name: "Alpha Corp", company: "Cyberdyne Systems", project_details: "Neural interface integration & web platform", timeline: "ASAP", duration: "1 month", budget: "$50k+" },
+                          { name: "Operative X", company: "Zion Net", project_details: "Decentralized mesh node tracking interface", timeline: "1-3 months", duration: "2-3 months", budget: "$25k-$50k" },
+                          { name: "Neo", company: "The Nebuchadnezzar", project_details: "Matrix navigation and security protocol deck", timeline: "ASAP", duration: "1 week", budget: "$10k-$25k" }
+                      ];
+                      renderBookings(mockBookings, true);
+                      return;
+                  }
+                  
+                  const bookings = [];
+                  snapshot.forEach((doc) => {
+                      bookings.push(doc.data());
+                  });
+                  renderBookings(bookings, false);
+              }, (error) => {
+                  console.warn("leads collection snapshot failed, using mocks:", error);
+                  const mockBookings = [
+                      { name: "Alpha Corp", company: "Cyberdyne Systems", project_details: "Neural interface integration & web platform", timeline: "ASAP", duration: "1 month", budget: "$50k+" },
+                      { name: "Operative X", company: "Zion Net", project_details: "Decentralized mesh node tracking interface", timeline: "1-3 months", duration: "2-3 months", budget: "$25k-$50k" },
+                      { name: "Neo", company: "The Nebuchadnezzar", project_details: "Matrix navigation and security protocol deck", timeline: "ASAP", duration: "1 week", budget: "$10k-$25k" }
+                  ];
+                  renderBookings(mockBookings, true);
+              });
+        } catch (err) {
+            console.error("Error with snapshot listener:", err);
+        }
+    }
+
+    function renderBookings(bookings, isMock) {
+        if (!bookingsLoader || !bookingsGrid) return;
+        bookingsLoader.style.display = 'none';
+        bookingsGrid.style.display = 'grid';
+        bookingsGrid.innerHTML = '';
+        
+        bookings.forEach((b) => {
+            const card = document.createElement('div');
+            card.className = 'glass booking-card';
+            Object.assign(card.style, {
+                padding: '25px',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                borderRadius: '12px',
+                background: 'rgba(5, 5, 10, 0.6)',
+                backdropFilter: 'blur(15px)',
+                transition: 'all 0.3s ease',
+                position: 'relative',
+                overflow: 'hidden',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between'
+            });
+            
+            // Glow border top
+            const topGlow = document.createElement('div');
+            Object.assign(topGlow.style, {
+                position: 'absolute',
+                top: '0',
+                left: '0',
+                width: '100%',
+                height: '2px',
+                background: 'linear-gradient(90deg, var(--primary), var(--secondary))',
+                boxShadow: '0 0 10px var(--primary)'
+            });
+            card.appendChild(topGlow);
+            
+            const contentDiv = document.createElement('div');
+            
+            const companyName = b.company ? b.company : "Independent Operator";
+            const clientName = b.name ? b.name : "Anonymous Client";
+            
+            const cardHeader = document.createElement('div');
+            cardHeader.style.display = 'flex';
+            cardHeader.style.justifyContent = 'space-between';
+            cardHeader.style.alignItems = 'center';
+            cardHeader.style.marginBottom = '15px';
+            cardHeader.style.fontFamily = "'Share Tech Mono', monospace";
+            cardHeader.style.fontSize = '0.75rem';
+            cardHeader.innerHTML = `
+                <span style="color: var(--primary); text-shadow: 0 0 8px rgba(0, 240, 255, 0.35); font-weight: bold;">[${companyName.toUpperCase()}]</span>
+                <span style="color: rgba(255, 255, 255, 0.3); font-size: 0.65rem;">${isMock ? 'SIMULATION' : 'SECURE_UPLINK'}</span>
+            `;
+            contentDiv.appendChild(cardHeader);
+            
+            const cardDesc = document.createElement('p');
+            cardDesc.style.fontSize = '0.85rem';
+            cardDesc.style.color = '#fff';
+            cardDesc.style.lineHeight = '1.5';
+            cardDesc.style.marginBottom = '20px';
+            cardDesc.style.fontFamily = "'Inter', sans-serif";
+            cardDesc.innerText = b.project_details || "No project parameters specified.";
+            contentDiv.appendChild(cardDesc);
+            
+            card.appendChild(contentDiv);
+            
+            const cardFooter = document.createElement('div');
+            cardFooter.style.display = 'flex';
+            cardFooter.style.flexWrap = 'wrap';
+            cardFooter.style.gap = '8px';
+            cardFooter.style.fontFamily = "'Share Tech Mono', monospace";
+            cardFooter.style.fontSize = '0.65rem';
+            
+            const duration = b.duration ? b.duration : "1 month";
+            const budget = b.budget ? b.budget : "Undisclosed";
+            
+            cardFooter.innerHTML = `
+                <span style="background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.25); padding: 3px 8px; border-radius: 4px; color: var(--primary);">TIME: ${duration.toUpperCase()}</span>
+                <span style="background: rgba(112, 0, 255, 0.08); border: 1px solid rgba(112, 0, 255, 0.25); padding: 3px 8px; border-radius: 4px; color: #a060ff;">BUDGET: ${budget}</span>
+            `;
+            card.appendChild(cardFooter);
+            
+            bookingsGrid.appendChild(card);
+        });
+    }
+
+    // Initialize bookings
+    fetchActiveBookings();
 });

@@ -367,22 +367,33 @@
                 </div>
 
                 <form id="multi-step-form" class="form" style="width: 100%; height: 100%; opacity: 0.05; pointer-events: none; filter: blur(5px); transition: all 0.5s ease;">
+                    <input type="hidden" name="form_type" value="booking">
                     
                     <div class="step step-1 active">
                         <h3>1. Tell us about yourself & your project</h3>
                         <input type="text" name="name" placeholder="Your Name" required class="glass-input">
+                        <input type="tel" name="phone" placeholder="Your Mobile Number" required class="glass-input">
                         <input type="text" name="company" placeholder="Company Name (Optional)" class="glass-input">
                         <textarea name="project_details" placeholder="What do you want to build? Tell us your idea..." rows="4" required class="glass-input textarea-input"></textarea>
                         <button type="button" class="btn-primary next-btn">Next Phase</button>
                     </div>
                     
                     <div class="step step-2">
-                        <h3>2. What is your timeline?</h3>
-                        <select name="timeline" class="glass-input">
+                        <h3>2. Choose timeline & duration</h3>
+                        <label style="display: block; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: rgba(255, 255, 255, 0.4); margin-bottom: 8px;">ESTIMATED STARTING TIMELINE:</label>
+                        <select name="timeline" class="glass-input" style="margin-bottom: 20px;">
                             <option value="ASAP">ASAP (Expedited)</option>
                             <option value="1-3 months">1-3 Months</option>
                             <option value="3-6 months">3-6 Months</option>
                             <option value="Flexible">Flexible</option>
+                        </select>
+                        <label style="display: block; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: rgba(255, 255, 255, 0.4); margin-bottom: 8px;">DESIRED PROJECT DURATION:</label>
+                        <select name="duration" class="glass-input">
+                            <option value="1 week">1 Week (Express Site)</option>
+                            <option value="2 weeks">2 Weeks</option>
+                            <option value="1 month">1 Month</option>
+                            <option value="2-3 months">2-3 Months</option>
+                            <option value="3+ months">3+ Months</option>
                         </select>
                         <div class="btn-row">
                             <button type="button" class="btn-secondary prev-btn">Back</button>
@@ -411,6 +422,23 @@
                 </form>
             </div>
         </div>
+
+        <!-- Live Booked Projects Registry -->
+        <div class="booked-projects-registry glass" style="max-width: 1000px; margin: 50px auto 0; padding: 40px; border: 1px solid rgba(0, 240, 255, 0.15); box-shadow: 0 10px 40px rgba(0, 240, 255, 0.05); text-align: left;">
+            <div class="registry-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.08); padding-bottom: 15px; margin-bottom: 25px;">
+                <h3 style="font-family: 'Share Tech Mono', monospace; font-size: 1.15rem; color: var(--primary); text-shadow: 0 0 10px rgba(0,240,255,0.25); display: flex; align-items: center; gap: 10px; margin: 0;">
+                    <span class="terminal-dot"></span> [LIVE_TRANSMISSION_LEDGER // RECENT_BOOKINGS]
+                </h3>
+                <span style="font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text-muted);">STATUS: LOGS_CONNECTED</span>
+            </div>
+            <div id="bookings-loader" style="text-align: center; padding: 20px; font-family: 'Share Tech Mono', monospace; color: var(--text-muted);">
+                [SCANNING PORTAL FOR DOCKING TRANSPORTS...]
+            </div>
+            <div id="bookings-grid" class="bookings-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; display: none;">
+                <!-- Dynamically populated from Firestore -->
+            </div>
+        </div>
+
         <div class="hiring-trigger-wrapper" style="text-align: center; margin-top: 40px;">
             <button type="button" id="open-hiring" class="btn-primary" style="padding: 12px 28px; font-size: 0.85rem; letter-spacing: 0.05em; font-family: 'Share Tech Mono', monospace; border-color: rgba(0,240,255,0.3); color: #00f0ff; text-shadow: 0 0 5px rgba(0,240,255,0.3);">[JOIN_OUR_CREW // WE ARE HIRING]</button>
         </div>
@@ -517,6 +545,8 @@
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; font-family: 'Share Tech Mono', monospace;">RECRUIT_GATE_v4.2 // CHOOSE A PATH TO UPLOAD DOSSIER</p>
             
             <form id="hiring-modal-form" class="hiring-modal-form">
+                <input type="hidden" name="form_type" value="hiring">
+                
                 <div class="form-group" style="margin-bottom: 25px;">
                     <select name="applied_position" class="glass-input" required style="margin-bottom: 0;">
                         <option value="" disabled selected>Select Your Operative Role...</option>
@@ -525,9 +555,23 @@
                         <option value="Visual Designer">Visual Creative Engineer (UI/UX / Motion)</option>
                     </select>
                 </div>
-                <input type="text" name="name" placeholder="Agent Alias / Name" required class="glass-input">
-                <input type="email" name="email" placeholder="Uplink Email" required class="glass-input">
-                <input type="url" name="portfolio" placeholder="GitHub / Portfolio Link" required class="glass-input">
+                
+                <input type="text" name="name" placeholder="Your Full Name" required class="glass-input">
+                <input type="email" name="email" placeholder="Uplink Email Address" required class="glass-input">
+                <input type="tel" name="phone" placeholder="Your Mobile Number" required class="glass-input">
+                <input type="text" name="college" placeholder="College / University Details" required class="glass-input">
+                <input type="text" name="skills" placeholder="Your Core Skills (e.g. React, Node, Python, Figma)" required class="glass-input">
+                <input type="url" name="portfolio" placeholder="Portfolio / GitHub Link" required class="glass-input">
+                
+                <div class="file-upload-wrapper" style="margin-bottom: 25px; text-align: left;">
+                    <label style="display: block; font-family: 'Share Tech Mono', monospace; font-size: 0.8rem; color: rgba(255, 255, 255, 0.4); margin-bottom: 8px;">[UPLOAD ID CARD IMAGE]</label>
+                    <input type="file" id="hiring-id-card" name="id_card_file" accept="image/*" required class="glass-input" style="padding: 12px; font-size: 0.8rem; cursor: pointer; margin-bottom: 0;">
+                    <input type="hidden" name="id_card_base64" id="id-card-base64">
+                    <div id="id-card-preview-container" style="display: none; margin-top: 10px; border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 8px; padding: 10px; text-align: center; background: rgba(0,0,0,0.5);">
+                        <img id="id-card-preview" src="" alt="ID Card Preview" style="max-height: 120px; max-width: 100%; border-radius: 4px; filter: drop-shadow(0 0 10px rgba(0,240,255,0.25));">
+                    </div>
+                </div>
+                
                 <button type="submit" class="btn-glow submit-hiring-btn font-mono" style="width: 100%; padding: 15px; font-size: 0.9rem; margin-top: 10px;">TRANSMIT DOSSIER</button>
             </form>
         </div>
