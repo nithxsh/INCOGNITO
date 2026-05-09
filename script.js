@@ -12,8 +12,9 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const db = firebase.firestore();
 
-// Deployed Google Sheets Web App URL for https://docs.google.com/spreadsheets/d/1EgvSjLOkqPWTlrvCOB6r6ikdnh0qmynRNH278Y8qpNU/edit?usp=sharing
-const GOOGLE_SHEETS_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx9fGHSiCRb6NLn2l6xcbX_n02PWWGyzC7Edrzh6pKXP1eO8SOwfFN0-U6cI3yVZYw8/exec";
+// Separate Deployed Google Sheets Web App URLs for Bookings and Hiring
+const GOOGLE_SHEETS_BOOKING_URL = "https://script.google.com/macros/s/AKfycbwKva14kAh77ovEw_uvuo_KKcNtTnd_7WzF7dGRnGqF0uHk213bn1IB9Jcxq4t9_41v-w/exec";
+const GOOGLE_SHEETS_HIRING_URL = "https://script.google.com/macros/s/AKfycbx9fGHSiCRb6NLn2l6xcbX_n02PWWGyzC7Edrzh6pKXP1eO8SOwfFN0-U6cI3yVZYw8/exec";
 
 let auth = null;
 let provider = null;
@@ -412,7 +413,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     searchParams.append(key, val);
                 }
             }
-            const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+            const sheetsPromise = fetch(GOOGLE_SHEETS_BOOKING_URL, {
                 method: 'POST',
                 body: searchParams,
                 mode: 'no-cors' // Bypasses CORS blocking
@@ -729,7 +730,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         searchParams.append(key, val);
                     }
                 }
-                const sheetsPromise = fetch(GOOGLE_SHEETS_WEBAPP_URL, {
+                const sheetsPromise = fetch(GOOGLE_SHEETS_HIRING_URL, {
                     method: 'POST',
                     body: searchParams,
                     mode: 'no-cors' // Bypasses CORS blocking
