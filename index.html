@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incognito | Architecture for the Digital Underground</title>
+    <meta name="description" content="We Build What Others Deem Impossible. Premium digital architecture, web engines, and autonomous logic.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@400;500;700&family=Share+Tech+Mono&family=Angkor&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Startup Loader -->
+    <div id="loader-wrapper">
+        <div id="loader-top"></div>
+        <div id="loader-bottom"></div>
+        <div id="loader-content">
+            <div id="loader-text"></div>
+            <div id="loader-line"></div>
+            <div id="loader-counter">00</div>
+        </div>
+    </div>
+
+    <div id="cursor-glow"></div>
+
+    <nav class="navbar bg-transparent">
+        <div class="logo">INCOGNITO<span class="logo-dot">.</span></div>
+        <div class="nav-links hidden-md-flex">
+            <a href="#services">Services</a>
+            <a href="#protocol">Protocol</a>
+            <a href="#about-us">About Us</a>
+            <a href="#contact">Initiate</a>
+        </div>
+        <!-- Mobile Toggle Button -->
+        <button class="menu-toggle" id="menu-toggle" aria-label="Toggle Navigation Menu">
+            <span class="toggle-bar"></span>
+            <span class="toggle-bar"></span>
+            <span class="toggle-bar"></span>
+        </button>
+    </nav>
+
+    <!-- Mobile Drawer Menu -->
+    <div class="mobile-drawer glass" id="mobile-drawer">
+        <div class="drawer-links">
+            <a href="#services" class="drawer-link">Services</a>
+            <a href="#protocol" class="drawer-link">Protocol</a>
+            <a href="#about-us" class="drawer-link">About Us</a>
+            <a href="#contact" class="drawer-link">Initiate</a>
+        </div>
+    </div>
+
+    <!-- 1. The Hook (Hero Section) -->
+    <header class="hero" id="hero">
+        <video class="bg-video" id="bg-video" loop muted playsinline preload="auto">
+            <source src="assets/Video%20Project.mp4" type="video/mp4">
+        </video>
+        
+        <svg class="svg-defs" width="100%" height="100%">
+            <defs>
+                <clipPath id="text-mask">
+                    <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" class="mask-text">INCOGNITO.</text>
+                </clipPath>
+            </defs>
+        </svg>
+
+        <div class="video-text-container" id="video-text-container">
+            <video class="fg-video" id="fg-video" loop muted playsinline preload="auto">
+                <source src="assets/Video%20Project.mp4" type="video/mp4">
+            </video>
+        </div>
+
+        <div class="hero-content">
+            <h1 class="sr-only">INCOGNITO.</h1>
+            <p class="dialogue" id="hero-dialogue">Architecture for the Digital Underground.<br>We Build What Others Deem Impossible.</p>
+            <div id="hero-cta-wrapper">
+                <a href="#contact" class="btn-glow" id="hero-cta">Start a Project</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 2. Service Menu -->
+    <section class="services" id="services">
+        <div class="bento-header">
+            <div class="service-mask-title">
+                <h2 class="bento-title slide-up-text">Digital Arsenal</h2>
+            </div>
+            <div class="service-mask-subtitle">
+                <p class="bento-subtitle slide-up-text">High-end technical products engineered for scale.</p>
+            </div>
+        </div>
+        <div class="service-grid-v2" id="service-grid-v2">
+            <div class="service-column">
+                <div class="service-bg">
+                    <video loop muted playsinline preload="auto">
+                        <source src="https://cdn.coverr.co/videos/coverr-writing-code-on-a-laptop-4554/1080p.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="service-content-wrapper">
+                    <div class="service-illustration">
+                        <img src="assets/service_1.png" alt="Custom Web Engines">
+                    </div>
+                    <div class="mask-slide">
+                        <div class="service-content">
+                            <span class="bento-num">01</span>
+                            <h3>Custom Web Engines</h3>
+                            <p>High-performance React/Next.js sites with 3D transitions and dynamic routing.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="service-column">
+                <div class="service-bg">
+                    <video loop muted playsinline preload="auto">
+                        <source src="https://cdn.coverr.co/videos/coverr-artificial-intelligence-circuit-board-6351/1080p.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="service-content-wrapper">
+                    <div class="service-illustration">
+                        <img src="assets/service_2.png" alt="Autonomous Logic">
+                    </div>
+                    <div class="mask-slide">
+                        <div class="service-content">
+                            <span class="bento-num">02</span>
+                            <h3>Autonomous Logic</h3>
+                            <p>Implementing n8n and Gemini AI to automate complex business workflows.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="service-column">
+                <div class="service-bg">
+                    <video loop muted playsinline preload="auto">
+                        <source src="https://cdn.coverr.co/videos/coverr-futuristic-server-room-9533/1080p.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="service-content-wrapper">
+                    <div class="service-illustration">
+                        <img src="assets/service_3.png" alt="System Overhauls">
+                    </div>
+                    <div class="mask-slide">
+                        <div class="service-content">
+                            <span class="bento-num">03</span>
+                            <h3>System Overhauls</h3>
+                            <p>Modernizing legacy portals into sleek, glassmorphic interfaces.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="service-column">
+                <div class="service-bg">
+                    <video loop muted playsinline preload="auto">
+                        <source src="https://cdn.coverr.co/videos/coverr-data-servers-4028/1080p.mp4" type="video/mp4">
+                    </video>
+                </div>
+                <div class="service-content-wrapper">
+                    <div class="service-illustration">
+                        <img src="assets/service_4.png" alt="Infrastructure Design">
+                    </div>
+                    <div class="mask-slide">
+                        <div class="service-content">
+                            <span class="bento-num">04</span>
+                            <h3>Infrastructure Design</h3>
+                            <p>Scalable backend architecture using Node.js and Firebase.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. The Protocol (Process Timeline) -->
+    <section class="protocol" id="protocol">
+        <div class="bento-header" style="text-align: center; margin-bottom: 80px;">
+            <div class="service-mask-title">
+                <h2 class="bento-title slide-up-text">The Protocol</h2>
+            </div>
+            <div class="service-mask-subtitle">
+                <p class="bento-subtitle slide-up-text">Our systematic approach to digital dominance.</p>
+            </div>
+        </div>
+
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+            <div class="timeline-progress" id="timeline-progress"></div>
+            <div class="timeline-wheel" id="timeline-wheel">
+                <svg width="100%" height="100%" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Tire Tread Outer Circle -->
+                    <circle cx="50" cy="50" r="46" stroke="#111111" stroke-width="8"/>
+                    <!-- Inner Alloy Rim Lip -->
+                    <circle cx="50" cy="50" r="38" stroke="var(--primary)" stroke-width="2.5"/>
+                    <!-- Sports Multi-Spoke Configuration -->
+                    <path d="M50 12 L50 88 M12 50 L88 50 M23 23 L77 77 M23 77 L77 23" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/>
+                    <!-- Ventilated Disc Brake Details -->
+                    <circle cx="50" cy="50" r="22" stroke="rgba(0, 240, 255, 0.25)" stroke-dasharray="6,4" stroke-width="1.5"/>
+                    <!-- Hub Assembly & Center Cap -->
+                    <circle cx="50" cy="50" r="9" fill="#050505" stroke="var(--primary)" stroke-width="2"/>
+                    <circle cx="50" cy="50" r="3" fill="var(--primary)"/>
+                </svg>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-num">01. INFILTRATION</span>
+                    <h3>Audit & Strategy</h3>
+                    <p>We dissect your current infrastructure, identify critical vulnerabilities, and map the optimal, encrypted path to scale your digital presence.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-num">02. ARCHITECTURE</span>
+                    <h3>System Blueprint</h3>
+                    <p>Drafting the master plan. We select the exact stack—Node.js, React, Firebase—required to ensure zero latency and maximum throughput.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-num">03. ASSEMBLY</span>
+                    <h3>Development & Logic</h3>
+                    <p>Writing the logic. Our engineers build the engine in total silence, utilizing glassmorphic UIs and highly secure backend databases.</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                    <span class="timeline-num">04. DEPLOYMENT</span>
+                    <h3>Launch & Scale</h3>
+                    <p>The system goes live. We deploy the architecture to the cloud, optimize for global delivery, and hand over the encrypted keys.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2.5 The Monochrome Stream -->
+    <section class="monochrome-stream" id="monochrome-stream">
+        <div class="monochrome-text-container">
+            <h2 class="monochrome-title glitch-hover" data-text="WE ARE EXPERIENCED.">
+                <span>W</span><span>E</span><span>&nbsp;</span><span>A</span><span>R</span><span>E</span><span>&nbsp;</span><span>E</span><span>X</span><span>P</span><span>E</span><span>R</span><span>I</span><span>E</span><span>N</span><span>C</span><span>E</span><span>D</span><span>.</span>
+            </h2>
+            <p class="monochrome-dialogue">"Mastery in every layer."</p>
+        </div>
+        <div class="tech-marquee-wrapper">
+            <div class="tech-marquee">
+                <div class="tech-icon floating-1"><img src="assets/icon_react.png" alt="React"></div>
+                <div class="tech-icon floating-2"><img src="assets/icon_node.png" alt="Node.js"></div>
+                <div class="tech-icon floating-3"><img src="assets/icon_n8n.png" alt="n8n"></div>
+                <div class="tech-icon floating-4"><img src="assets/icon_firebase.png" alt="Firebase"></div>
+                <!-- Duplicate for infinite loop -->
+                <div class="tech-icon floating-1"><img src="assets/icon_react.png" alt="React"></div>
+                <div class="tech-icon floating-2"><img src="assets/icon_node.png" alt="Node.js"></div>
+                <div class="tech-icon floating-3"><img src="assets/icon_n8n.png" alt="n8n"></div>
+                <div class="tech-icon floating-4"><img src="assets/icon_firebase.png" alt="Firebase"></div>
+                <!-- Triplicate for ultra-wide screens -->
+                <div class="tech-icon floating-1"><img src="assets/icon_react.png" alt="React"></div>
+                <div class="tech-icon floating-2"><img src="assets/icon_node.png" alt="Node.js"></div>
+                <div class="tech-icon floating-3"><img src="assets/icon_n8n.png" alt="n8n"></div>
+                <div class="tech-icon floating-4"><img src="assets/icon_firebase.png" alt="Firebase"></div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+
+    <!-- 5. The Conversion Engine -->
+    <section class="contact" id="contact">
+        <div class="contact-container glass">
+            <div class="contact-info">
+                <div class="secure-channel-tag"><span class="terminal-dot"></span> SECURE CHANNEL</div>
+                <h2>Initiate<br>Project</h2>
+                <p class="contact-subtitle">Establish connection with the central matrix. Let's architect your digital future together.</p>
+                <div class="hud-connection-status">
+                    <div class="status-line"><span class="label">DATABASE:</span> <span class="val green">ONLINE</span></div>
+                    <div class="status-line"><span class="label">ENCRYPTION:</span> <span class="val green">AES_256</span></div>
+                    <div class="status-line"><span class="label">UPLINK:</span> <span class="val green">STABLE</span></div>
+                </div>
+            </div>
+            <form id="multi-step-form" class="form">
+                
+                <div class="step step-1 active">
+                    <h3>1. Tell us about yourself & your project</h3>
+                    <input type="text" name="name" placeholder="Your Name" required class="glass-input">
+                    <input type="text" name="company" placeholder="Company Name (Optional)" class="glass-input">
+                    <textarea name="project_details" placeholder="What do you want to build? Tell us your idea..." rows="4" required class="glass-input textarea-input"></textarea>
+                    <button type="button" class="btn-primary next-btn">Next Phase</button>
+                </div>
+                
+                <div class="step step-2">
+                    <h3>2. What is your timeline?</h3>
+                    <select name="timeline" class="glass-input">
+                        <option value="ASAP">ASAP (Expedited)</option>
+                        <option value="1-3 months">1-3 Months</option>
+                        <option value="3-6 months">3-6 Months</option>
+                        <option value="Flexible">Flexible</option>
+                    </select>
+                    <div class="btn-row">
+                        <button type="button" class="btn-secondary prev-btn">Back</button>
+                        <button type="button" class="btn-primary next-btn">Next Phase</button>
+                    </div>
+                </div>
+
+                <div class="step step-3">
+                    <h3>3. What is your budget range?</h3>
+                    <select name="budget" class="glass-input">
+                        <option value="$10k-$25k">$10k - $25k</option>
+                        <option value="$25k-$50k">$25k - $50k</option>
+                        <option value="$50k+">$50k+</option>
+                    </select>
+                    <input type="email" name="email" placeholder="Your Encrypted Email Address" required class="glass-input mt-4">
+                    <div class="btn-row">
+                        <button type="button" class="btn-secondary prev-btn">Back</button>
+                        <button type="submit" class="btn-glow submit-btn" style="padding: 15px 30px; font-size: 0.9rem;">CREATE UR WEBSITE</button>
+                    </div>
+                </div>
+
+                <div class="step step-success">
+                    <h3>Transmission Received.</h3>
+                    <p>We will be in contact shortly.</p>
+                </div>
+            </form>
+        </div>
+        <div class="hiring-trigger-wrapper" style="text-align: center; margin-top: 40px;">
+            <button type="button" id="open-hiring" class="btn-primary" style="padding: 12px 28px; font-size: 0.85rem; letter-spacing: 0.05em; font-family: 'Share Tech Mono', monospace; border-color: rgba(0,240,255,0.3); color: #00f0ff; text-shadow: 0 0 5px rgba(0,240,255,0.3);">[JOIN_OUR_CREW // WE ARE HIRING]</button>
+        </div>
+    </section>
+
+    <footer id="about-us">
+        <div class="footer-content">
+            <div class="footer-main">
+                <div class="footer-left">
+                    <h2 class="footer-callout">Experience liftoff<span class="logo-dot">.</span></h2>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-column">
+                        <h4>Navigation</h4>
+                        <a href="#services">Services</a>
+                        <a href="#protocol">Protocol</a>
+                        <a href="#about-us">About Us</a>
+                        <a href="#contact">Initiate</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Direct Uplink</h4>
+                        <a href="#" id="obfuscated-email">Email Us</a>
+                        <a href="https://www.instagram.com/incognitobuilds/?__pwa=1" target="_blank">Instagram</a>
+                    </div>
+                    <div class="footer-column">
+                        <h4>Lead Architect</h4>
+                        <span class="founder-label">FOUNDER</span>
+                        <span class="founder-val">Nithishwaran.J.C</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="massive-wordmark-container">
+                <div class="massive-wordmark">INCOGNITO</div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-bottom-left">
+                    <span class="footer-mini-logo">INCOGNITO<span class="logo-dot">.</span></span>
+                </div>
+                <div class="footer-bottom-right">
+                    <a href="#" id="open-privacy">Privacy Policy</a>
+                    <a href="#" id="open-terms">Terms & Conditions</a>
+                    <span>&copy; 2026 Incognito Collective. All rights reserved.</span>
+                    <span>Crafted by Nithishwaran.J.C.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Policy Modal -->
+    <div class="policy-modal" id="privacy-modal">
+        <div class="policy-modal-content glass">
+            <button class="close-modal-btn" id="close-privacy">&times;</button>
+            <h2>Privacy Policy</h2>
+            <div class="policy-text">
+                <p><strong>Effective Date:</strong> January 1, 2026</p>
+                <p>Welcome to Incognito Collective. Your privacy is paramount. This policy outlines how we handle data within our decentralized digital architecture studio.</p>
+                
+                <h3>1. Zero-Telemetry Protocol</h3>
+                <p>We do not track, log, or store your private browsing sessions. All submissions to our 'Initiate Project' engine are encrypted end-to-end and saved directly into secure, private firestore databases.</p>
+
+                <h3>2. Data Collection & Transmission</h3>
+                <p>We only collect the parameters voluntarily provided during project initiation (e.g., your name, company, timeline, budget, and contact address). This information is utilized solely to establish secure project communication channels.</p>
+
+                <h3>3. Public Access Restraints</h3>
+                <p>Our database schemas employ strict read rules preventing any external public inspection, ensuring your intellectual project briefs remain strictly confidential.</p>
+                
+                <h3>4. Cookies and Web Analytics</h3>
+                <p>We utilize zero third-party tracking cookies. Your experience on our landing page remains unmonitored and secure.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div class="policy-modal" id="terms-modal">
+        <div class="policy-modal-content glass">
+            <button class="close-modal-btn" id="close-terms">&times;</button>
+            <h2>Terms &amp; Conditions</h2>
+            <div class="policy-text">
+                <p><strong>Effective Date:</strong> January 1, 2026</p>
+                <p>By entering this portal or initiating any digital projects with Incognito Collective, you agree to comply with the following operational terms.</p>
+
+                <h3>1. Intellect Security</h3>
+                <p>All source code, design systems, layouts, and custom glassmorphic aesthetics engineered by Incognito Collective remain proprietary property until full project settlement is reached.</p>
+
+                <h3>2. Client Submissions</h3>
+                <p>Any project brief or metadata transmitted via our contact forms must be authentic. False declarations or malicious telemetry injection will result in automatic IP blocklist placement.</p>
+
+                <h3>3. Project Initiation & Timeline</h3>
+                <p>Project milestones, delivery schedules, and budget allocations selected in our contact funnel act as initial estimations. Official, binding terms will be detailed during direct uplink communication.</p>
+
+                <h3>4. Service Render Limits</h3>
+                <p>Incognito Collective is not liable for service latency caused by third-party hosting, decentralized database outages, or regional internet blocks.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- We Are Hiring Modal -->
+    <div class="policy-modal" id="hiring-modal">
+        <div class="policy-modal-content glass" style="max-width: 550px;">
+            <button class="close-modal-btn" id="close-hiring">&times;</button>
+            <h2 style="font-family: 'Share Tech Mono', monospace; color: var(--primary); text-shadow: 0 0 10px rgba(0,240,255,0.2); font-size: 1.8rem; margin-bottom: 10px;">[PROTOCOL: BREACH]</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 30px; font-family: 'Share Tech Mono', monospace;">RECRUIT_GATE_v4.2 // CHOOSE A PATH TO UPLOAD DOSSIER</p>
+            
+            <form id="hiring-modal-form" class="hiring-modal-form">
+                <div class="form-group" style="margin-bottom: 25px;">
+                    <select name="applied_position" class="glass-input" required style="margin-bottom: 0;">
+                        <option value="" disabled selected>Select Your Operative Role...</option>
+                        <option value="Frontend Architect">Frontend Logic Architect (React / GSAP)</option>
+                        <option value="Backend Injector">Database Protocol Injector (Node / Firebase)</option>
+                        <option value="Visual Designer">Visual Creative Engineer (UI/UX / Motion)</option>
+                    </select>
+                </div>
+                <input type="text" name="name" placeholder="Agent Alias / Name" required class="glass-input">
+                <input type="email" name="email" placeholder="Uplink Email" required class="glass-input">
+                <input type="url" name="portfolio" placeholder="GitHub / Portfolio Link" required class="glass-input">
+                <button type="submit" class="btn-glow submit-hiring-btn font-mono" style="width: 100%; padding: 15px; font-size: 0.9rem; margin-top: 10px;">TRANSMIT DOSSIER</button>
+            </form>
+        </div>
+    </div>
+
+
+
+    <!-- Firebase Compat SDKs (Works locally without a server) -->
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-auth-compat.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>

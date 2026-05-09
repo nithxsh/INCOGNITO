@@ -1,0 +1,62 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Rules for the "leads" collection
+    match /leads/{leadId} {
+      
+      // ALLOW: Anyone can submit a new lead, but with strict validation
+      allow create: if 
+        // 1. Ensure required fields exist and match expected types/ranges
+        request.resource.data.name is string && 
+        request.resource.data.name.size() > 0 && 
+        request.resource.data.name.size() < 100 &&
+        
+        request.resource.data.email is string && 
+        request.resource.data.email.size() > 0 && 
+        request.resource.data.email.size() < 100 &&
+        request.resource.data.email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$') &&
+        
+        request.resource.data.company is string && 
+        request.resource.data.company.size() < 100 &&
+        
+        request.resource.data.timeline is string &&
+        request.resource.data.budget is string &&
+        
+        // 2. Validate timestamp is the exact request server time (prevents fake history)
+        request.resource.data.timestamp == request.time;
+      
+    }
+    
+    // Rules for the "operatives" collection
+    match /operatives/{operativeId} {
+      allow create: if 
+        request.resource.data.applied_position is string &&
+        request.resource.data.applied_position.size() > 0 &&
+        request.resource.data.applied_position.size() < 100 &&
+        
+        request.resource.data.name is string &&
+        request.resource.data.name.size() > 0 &&
+        request.resource.data.name.size() < 100 &&
+        
+        request.resource.data.email is string &&
+        request.resource.data.email.size() > 0 &&
+        request.resource.data.email.size() < 100 &&
+        request.resource.data.email.matches('^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$') &&
+        
+        request.resource.data.portfolio is string &&
+        request.resource.data.portfolio.size() > 0 &&
+        request.resource.data.portfolio.size() < 250 &&
+        
+        request.resource.data.timestamp == request.time;
+        
+      allow read, update, delete: if false;
+    }
+    
+    // Default rule: Absolute lock on all other collections
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
