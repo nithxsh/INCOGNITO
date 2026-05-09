@@ -14,7 +14,7 @@ const db = firebase.firestore();
 
 // Separate Deployed Google Sheets Web App URLs for Bookings and Hiring
 const GOOGLE_SHEETS_BOOKING_URL = "https://script.google.com/macros/s/AKfycbwusfMlvL8jabnkZhCdBsuRw4_lxHxUuTA9M46fWolNQpeJgnsZEwRXKTWQYthZnGaJ/exec";
-const GOOGLE_SHEETS_HIRING_URL = "https://script.google.com/macros/s/AKfycbx9fGHSiCRb6NLn2l6xcbX_n02PWWGyzC7Edrzh6pKXP1eO8SOwfFN0-U6cI3yVZYw8/exec";
+const GOOGLE_SHEETS_HIRING_URL = "https://script.google.com/macros/s/AKfycbyqZlmlhMzeye9Yr5OfoEbIZwrtQO2k4ljpTCYPDeuMIWO5WdvP8q1nI9R1nGuVCy5w/exec";
 
 let auth = null;
 let provider = null;
