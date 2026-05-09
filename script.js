@@ -423,55 +423,130 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // 4.5 Google Sign-In Gate for "Start a Project" CTA
+    // 4.5 Centralized Google Sign-In Gate System
     const heroCta = document.getElementById('hero-cta');
+    const authOverlay = document.getElementById('auth-overlay');
+    const googleLoginBtn = document.getElementById('google-login-btn');
+    const hudOperative = document.getElementById('hud-operative');
+    const formEl = document.getElementById('multi-step-form');
     let signedInUser = null;
 
-    function autoFillAndScroll(user) {
-        signedInUser = user;
-        const nameField = form.querySelector('input[name="name"]');
-        const emailField = form.querySelector('input[name="email"]');
-        
-        if (nameField && user.displayName) {
-            nameField.value = user.displayName;
-            nameField.style.borderColor = 'rgba(0, 240, 255, 0.5)';
-            nameField.style.color = '#00f0ff';
-        }
-        if (emailField && user.email) {
-            emailField.value = user.email;
-            emailField.style.borderColor = 'rgba(0, 240, 255, 0.5)';
-            emailField.style.color = '#00f0ff';
-        }
-        
-        // Scroll to contact section
-        const contactSection = document.querySelector('#contact');
-        if (contactSection) {
-            window.scrollTo({
-                top: contactSection.offsetTop,
-                behavior: 'smooth'
-            });
+    // Central Auth State Handler
+    function handleAuthStateChange(user) {
+        if (user) {
+            signedInUser = user;
+            
+            // Fade out the lock gate overlay
+            if (authOverlay) {
+                authOverlay.style.opacity = '0';
+                authOverlay.style.pointerEvents = 'none';
+                setTimeout(() => {
+                    authOverlay.style.visibility = 'hidden';
+                }, 500);
+            }
+            
+            // Unlock and unblur the form
+            if (formEl) {
+                formEl.style.opacity = '1';
+                formEl.style.pointerEvents = 'auto';
+                formEl.style.filter = 'none';
+            }
+            
+            // Update connection HUD status
+            if (hudOperative) {
+                hudOperative.innerText = "AUTHORIZED";
+                hudOperative.className = "val green";
+                hudOperative.style.color = "#00ff66";
+                hudOperative.style.textShadow = "0 0 10px rgba(0, 255, 102, 0.5)";
+            }
+            
+            // Pre-fill name and email fields
+            const nameField = formEl.querySelector('input[name="name"]');
+            const emailField = formEl.querySelector('input[name="email"]');
+            if (nameField && user.displayName) {
+                nameField.value = user.displayName;
+                nameField.style.borderColor = 'rgba(0, 240, 255, 0.5)';
+                nameField.style.color = '#00f0ff';
+            }
+            if (emailField && user.email) {
+                emailField.value = user.email;
+                emailField.style.borderColor = 'rgba(0, 240, 255, 0.5)';
+                emailField.style.color = '#00f0ff';
+            }
+        } else {
+            signedInUser = null;
+            
+            // Fade in the lock gate overlay
+            if (authOverlay) {
+                authOverlay.style.visibility = 'visible';
+                authOverlay.style.opacity = '1';
+                authOverlay.style.pointerEvents = 'auto';
+            }
+            
+            // Blur and lock the form
+            if (formEl) {
+                formEl.style.opacity = '0.05';
+                formEl.style.pointerEvents = 'none';
+                formEl.style.filter = 'blur(5px)';
+            }
+            
+            // Update connection HUD status to Unauthorized
+            if (hudOperative) {
+                hudOperative.innerText = "UNAUTHORIZED";
+                hudOperative.className = "val red";
+                hudOperative.style.color = "#ff0055";
+                hudOperative.style.textShadow = "0 0 10px rgba(255, 0, 85, 0.5)";
+            }
         }
     }
 
+    // Bind Firebase onAuthStateChanged
+    if (auth && typeof auth.onAuthStateChanged === 'function') {
+        auth.onAuthStateChanged((user) => {
+            handleAuthStateChange(user);
+        });
+    }
+
+    // Function to trigger login with Google
+    async function triggerGoogleLogin() {
+        try {
+            const result = await auth.signInWithPopup(provider);
+            handleAuthStateChange(result.user);
+            return result.user;
+        } catch (error) {
+            console.error('Sign-In Error:', error);
+            showNotification("UPLINK FAILED: Google Authentication was interrupted.");
+            throw error;
+        }
+    }
+
+    // Event listener for the Google Login Overlay button
+    if (googleLoginBtn) {
+        googleLoginBtn.addEventListener('click', async () => {
+            await triggerGoogleLogin();
+        });
+    }
+
+    // Start a Project Hero CTA Click Handler
     if (heroCta) {
         heroCta.addEventListener('click', async (e) => {
             e.preventDefault();
             e.stopImmediatePropagation();
             
             try {
-                // If already signed in, just auto-fill and scroll
-                if (auth.currentUser) {
-                    autoFillAndScroll(auth.currentUser);
-                    return;
+                if (!signedInUser) {
+                    await triggerGoogleLogin();
                 }
-                
-                // Trigger Google Sign-In Popup
-                const result = await auth.signInWithPopup(provider);
-                autoFillAndScroll(result.user);
-                
-            } catch (error) {
-                console.error('Sign-In Error:', error);
-                // Fallback: scroll to contact form anyway if sign-in fails/cancelled
+                // Scroll to contact section
+                const contactSection = document.querySelector('#contact');
+                if (contactSection) {
+                    window.scrollTo({
+                        top: contactSection.offsetTop,
+                        behavior: 'smooth'
+                    });
+                }
+            } catch (err) {
+                // Scroll anyway so they see the lock gate
                 const contactSection = document.querySelector('#contact');
                 if (contactSection) {
                     window.scrollTo({
@@ -483,13 +558,23 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Smooth Scroll for Nav Links
+    // Smooth Scroll & Intercept Auth for "Initiate" Links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-        anchor.addEventListener('click', function (e) {
-            if (this.id === 'hero-cta') return; // Handled by Google Sign-In flow
+        anchor.addEventListener('click', async function (e) {
+            if (this.id === 'hero-cta') return; // Handled by separate listener
             e.preventDefault();
             const targetId = this.getAttribute('href');
             if (targetId === '#') return;
+            
+            if (targetId === '#contact') {
+                try {
+                    if (!signedInUser) {
+                        await triggerGoogleLogin();
+                    }
+                } catch (err) {
+                    // Fail silently, they'll see the lock screen overlay
+                }
+            }
             
             const targetElement = document.querySelector(targetId);
             if (targetElement) {
