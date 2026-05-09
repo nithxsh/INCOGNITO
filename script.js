@@ -358,11 +358,33 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    function validateStep(stepIndex) {
+        const activeStep = steps[stepIndex];
+        const inputs = activeStep.querySelectorAll('input, textarea, select');
+        let isValid = true;
+        inputs.forEach(input => {
+            if (input.name === 'company' || input.placeholder.includes('Optional')) {
+                return;
+            }
+            if (!input.value.trim()) {
+                input.style.borderColor = '#ff0055';
+                input.style.boxShadow = '0 0 10px rgba(255, 0, 85, 0.2)';
+                isValid = false;
+            } else {
+                input.style.borderColor = '';
+                input.style.boxShadow = '';
+            }
+        });
+        return isValid;
+    }
+
     nextBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            if (currentStep < steps.length - 1) {
-                currentStep++;
-                showStep(currentStep);
+            if (validateStep(currentStep)) {
+                if (currentStep < steps.length - 1) {
+                    currentStep++;
+                    showStep(currentStep);
+                }
             }
         });
     });
@@ -378,6 +400,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
+        
+        if (!validateStep(currentStep)) {
+            return; // Prevent submission if any active inputs are empty
+        }
         
         const submitBtn = form.querySelector('.submit-btn');
         const originalText = submitBtn.textContent;
