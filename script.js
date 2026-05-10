@@ -1,35 +1,43 @@
-// TODO: Paste your Firebase Config here!
-const firebaseConfig = {
-  apiKey: "AIzaSyCOFRuPFoWkFIv4z9VbNXVaZixddkFIB_I",
-  authDomain: "incognitohacks-26e88.firebaseapp.com",
-  projectId: "incognitohacks-26e88",
-  storageBucket: "incognitohacks-26e88.firebasestorage.app",
-  messagingSenderId: "639077213400",
-  appId: "1:639077213400:web:a315105c184da076bee3ad"
-};
-
-// Initialize Firebase using Compat SDK
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
 // Separate Deployed Google Sheets Web App URLs for Bookings and Hiring
 const GOOGLE_SHEETS_BOOKING_URL = "https://script.google.com/macros/s/AKfycbyXTuwH_jnF604C6b59VBnYscmmTuwWJOVsxR_vFdo9YniGLLUcCF7pvm-8scTKm92oDQ/exec";
 const GOOGLE_SHEETS_HIRING_URL = "https://script.google.com/macros/s/AKfycbyqZlmlhMzeye9Yr5OfoEbIZwrtQO2k4ljpTCYPDeuMIWO5WdvP8q1nI9R1nGuVCy5w/exec";
 
+let db = null;
 let auth = null;
 let provider = null;
 
-// Firebase Auth has cross-origin limitations under the local file:// protocol. 
-// We initialize it conditionally to completely eliminate iframe and postMessage console errors during local file testing.
-if (window.location.protocol.startsWith('http')) {
-    auth = firebase.auth();
-    provider = new firebase.auth.GoogleAuthProvider();
-} else {
-    console.warn("INCOGNITO: Bypassing Firebase Auth under local file:// protocol. Use a local HTTP/HTTPS server for authentication features.");
+// Safeguarded Firebase Initialization to prevent Script crash if externally blocked
+try {
+    if (typeof firebase !== 'undefined') {
+        const firebaseConfig = {
+            apiKey: "AIzaSyCOFRuPFoWkFIv4z9VbNXVaZixddkFIB_I",
+            authDomain: "incognitohacks-26e88.firebaseapp.com",
+            projectId: "incognitohacks-26e88",
+            storageBucket: "incognitohacks-26e88.firebasestorage.app",
+            messagingSenderId: "639077213400",
+            appId: "1:639077213400:web:a315105c184da076bee3ad"
+        };
+        firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        
+        if (window.location.protocol.startsWith('http')) {
+            auth = firebase.auth();
+            provider = new firebase.auth.GoogleAuthProvider();
+        }
+    }
+} catch (err) {
+    console.error("CRITICAL ERROR initializing Firebase:", err);
+}
+
+// Fallback auth mock if Firebase initialization failed or protocol is not HTTP
+if (!auth) {
+    console.warn("INCOGNITO: Bypassing Firebase Auth logic. Using local fallback.");
     auth = {
         currentUser: null,
-        onAuthStateChanged: (callback) => callback(null),
-        signInWithPopup: () => Promise.reject(new Error("Firebase Auth is disabled under local file:// protocol.")),
+        onAuthStateChanged: (callback) => {
+            if (typeof callback === 'function') callback(null);
+        },
+        signInWithPopup: () => Promise.reject(new Error("Firebase Auth is offline or bypassed.")),
         signOut: () => Promise.resolve()
     };
 }
@@ -425,12 +433,16 @@ document.addEventListener('DOMContentLoaded', () => {
                 projectData[key] = val;
             }
         }
-        projectData.timestamp = firebase.firestore.FieldValue.serverTimestamp(); // Adds a true server timestamp
+        if (typeof firebase !== 'undefined' && firebase.firestore) {
+            projectData.timestamp = firebase.firestore.FieldValue.serverTimestamp(); 
+        } else {
+            projectData.timestamp = new Date().toISOString();
+        }
 
         try {
             // 1. Write directly to Firestore "leads" collection (failsafe-enabled)
-            const firestorePromise = db.collection("leads").add(projectData)
-                .catch(err => console.warn("Firestore save bypassed:", err));
+            const firestorePromise = db ? db.collection("leads").add(projectData)
+                .catch(err => console.warn("Firestore save bypassed:", err)) : Promise.resolve();
             
             const sheetsPromise = fetch(GOOGLE_SHEETS_BOOKING_URL, {
                 method: 'POST',
@@ -735,12 +747,16 @@ document.addEventListener('DOMContentLoaded', () => {
                     applicantData[key] = val;
                 }
             }
-            applicantData.timestamp = firebase.firestore.FieldValue.serverTimestamp();
+            if (typeof firebase !== 'undefined' && firebase.firestore) {
+                applicantData.timestamp = firebase.firestore.FieldValue.serverTimestamp(); 
+            } else {
+                applicantData.timestamp = new Date().toISOString();
+            }
 
             try {
                 // 1. Write directly to Firestore "operatives" collection (failsafe-enabled)
-                const firestorePromise = db.collection("operatives").add(applicantData)
-                    .catch(err => console.warn("Firestore save bypassed:", err));
+                const firestorePromise = db ? db.collection("operatives").add(applicantData)
+                    .catch(err => console.warn("Firestore save bypassed:", err)) : Promise.resolve();
                 
                 // 2. Secretly transmit to Google Sheets via Web App URL
                 const sheetsPromise = fetch(GOOGLE_SHEETS_HIRING_URL, {
