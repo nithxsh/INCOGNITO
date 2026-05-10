@@ -1,6 +1,6 @@
 // Separate Deployed Google Sheets Web App URLs for Bookings and Hiring
-const GOOGLE_SHEETS_BOOKING_URL = "https://script.google.com/macros/s/AKfycbyXTuwH_jnF604C6b59VBnYscmmTuwWJOVsxR_vFdo9YniGLLUcCF7pvm-8scTKm92oDQ/exec";
-const GOOGLE_SHEETS_HIRING_URL = "https://script.google.com/macros/s/AKfycbyqZlmlhMzeye9Yr5OfoEbIZwrtQO2k4ljpTCYPDeuMIWO5WdvP8q1nI9R1nGuVCy5w/exec";
+const GOOGLE_SHEETS_BOOKING_URL = import.meta.env.VITE_GOOGLE_SHEETS_BOOKING_URL;
+const GOOGLE_SHEETS_HIRING_URL = import.meta.env.VITE_GOOGLE_SHEETS_HIRING_URL;
 
 let db = null;
 let auth = null;
@@ -10,12 +10,12 @@ let provider = null;
 try {
     if (typeof firebase !== 'undefined') {
         const firebaseConfig = {
-            apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCOFRuPFoWkFIv4z9VbNXVaZixddkFIB_I",
-            authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "incognitohacks-26e88.firebaseapp.com",
-            projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "incognitohacks-26e88",
-            storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "incognitohacks-26e88.firebasestorage.app",
-            messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "639077213400",
-            appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:639077213400:web:a315105c184da076bee3ad"
+            apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+            authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+            projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+            storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+            messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+            appId: import.meta.env.VITE_FIREBASE_APP_ID
         };
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
