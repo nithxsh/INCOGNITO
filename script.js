@@ -10,12 +10,12 @@ let provider = null;
 try {
     if (typeof firebase !== 'undefined') {
         const firebaseConfig = {
-            apiKey: "AIzaSyCOFRuPFoWkFIv4z9VbNXVaZixddkFIB_I",
-            authDomain: "incognitohacks-26e88.firebaseapp.com",
-            projectId: "incognitohacks-26e88",
-            storageBucket: "incognitohacks-26e88.firebasestorage.app",
-            messagingSenderId: "639077213400",
-            appId: "1:639077213400:web:a315105c184da076bee3ad"
+            apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyCOFRuPFoWkFIv4z9VbNXVaZixddkFIB_I",
+            authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "incognitohacks-26e88.firebaseapp.com",
+            projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "incognitohacks-26e88",
+            storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET || "incognitohacks-26e88.firebasestorage.app",
+            messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "639077213400",
+            appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:639077213400:web:a315105c184da076bee3ad"
         };
         firebase.initializeApp(firebaseConfig);
         db = firebase.firestore();
