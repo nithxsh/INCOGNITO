@@ -1046,7 +1046,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    }
 
     // Standalone Pay Button Logic
     const standalonePayBtn = document.getElementById('standalone-pay-btn');
