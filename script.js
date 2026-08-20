@@ -440,48 +440,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            // Initiate UPI Payment before saving data
-            if (window.UpiPayment) {
-                window.UpiPayment.open({
-                    payeeName: 'Incognito Hacks',
-                    eventName: 'Website Project Booking',
-                    amount: '10.00',
-                    collegeUpiId: '8754330333-2.wallet@phonepe',
-                    orderId: 'INCOG-' + Date.now(),
-                    onSuccess: async () => {
-                        // 1. Write directly to Firestore "leads" collection (failsafe-enabled)
-                        const firestorePromise = db ? db.collection("leads").add(projectData)
-                            .catch(err => console.warn("Firestore save bypassed:", err)) : Promise.resolve();
-                        
-                        const sheetsPromise = fetch(GOOGLE_SHEETS_BOOKING_URL, {
-                            method: 'POST',
-                            body: formData,
-                            mode: 'no-cors' // Bypasses CORS blocking
-                        });
+            // 1. Write directly to Firestore "leads" collection (failsafe-enabled)
+            const firestorePromise = db ? db.collection("leads").add(projectData)
+                .catch(err => console.warn("Firestore save bypassed:", err)) : Promise.resolve();
+            
+            const sheetsPromise = fetch(GOOGLE_SHEETS_BOOKING_URL, {
+                method: 'POST',
+                body: formData,
+                mode: 'no-cors' // Bypasses CORS blocking
+            });
 
-                        // Wait for both to finish simultaneously
-                        await Promise.all([firestorePromise, sheetsPromise]);
-                        
-                        currentStep = steps.length - 1; // Show success step
-                        showStep(currentStep);
-                        form.reset();
-                        submitBtn.textContent = originalText;
-                        submitBtn.style.opacity = '1';
-                        submitBtn.disabled = false;
-                    },
-                    onClose: () => {
-                        console.log('Payment modal closed by user.');
-                        submitBtn.textContent = originalText;
-                        submitBtn.style.opacity = '1';
-                        submitBtn.disabled = false;
-                    }
-                });
-            } else {
-                console.error("UPI Payment Widget script not loaded.");
-                submitBtn.textContent = 'Failed. Check Console.';
-                submitBtn.style.opacity = '1';
-                submitBtn.disabled = false;
-            }
+            // Wait for both to finish simultaneously
+            await Promise.all([firestorePromise, sheetsPromise]);
+            
+            currentStep = steps.length - 1; // Show success step
+            showStep(currentStep);
+            form.reset();
+            submitBtn.textContent = originalText;
+            submitBtn.style.opacity = '1';
+            submitBtn.disabled = false;
+            
         } catch (error) {
             console.error('Transmission Error:', error);
             submitBtn.textContent = 'Failed. Check Console.';
@@ -1068,5 +1046,30 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    }
+
+    // Standalone Pay Button Logic
+    const standalonePayBtn = document.getElementById('standalone-pay-btn');
+    if (standalonePayBtn) {
+        standalonePayBtn.addEventListener('click', () => {
+            if (window.UpiPayment) {
+                window.UpiPayment.open({
+                    payeeName: 'Incognito Hacks',
+                    eventName: 'Custom Payment',
+                    amount: '10.00',
+                    collegeUpiId: '8754330333-2.wallet@phonepe',
+                    orderId: 'INCOG-PAY-' + Date.now(),
+                    onSuccess: () => {
+                        alert('Payment Successful!');
+                    },
+                    onClose: () => {
+                        console.log('Payment popup closed');
+                    }
+                });
+            } else {
+                alert('Payment system is currently offline.');
+            }
+        });
+    }
 
 });
